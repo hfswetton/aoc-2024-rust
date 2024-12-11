@@ -4,7 +4,7 @@ pub mod coord_grid {
     use std::io::{BufReader, Lines};
     use strum_macros::EnumIter;
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub struct Grid<const GRID_WIDTH: usize, const GRID_HEIGHT: usize, T: Copy + Debug + Default + PartialEq> {
         _grid: [[T; GRID_WIDTH]; GRID_HEIGHT],
     }
@@ -75,7 +75,7 @@ pub mod coord_grid {
             num_lines += 1;
             let line = l.unwrap();
             if line.len() != GRID_WIDTH { line_lengths_valid = false }
-            line.chars().enumerate().for_each(|(j, c)| { grid.set((i, j), c); });
+            line.chars().enumerate().for_each(|(j, c)| { let _ = grid.set((i, j), c); });
         });
         if num_lines != GRID_HEIGHT {
             Err(format!("incorrect number of lines: found {num_lines}, expected {GRID_HEIGHT}"))
@@ -86,7 +86,7 @@ pub mod coord_grid {
         }
     }
 
-    #[derive(Debug, PartialEq, Eq, Copy, Clone, EnumIter)]
+    #[derive(Debug, PartialEq, Eq, Copy, Clone, EnumIter, Hash)]
     pub enum Direction {
         North,
         Northeast,
