@@ -19,6 +19,11 @@ pub mod coord_grid {
             i < GRID_HEIGHT && j < GRID_WIDTH
         }
 
+        pub fn contains_coords_signed(&self, coords: (isize, isize)) -> bool {
+            let (i, j) = coords;
+            i >= 0 && j >= 0 && self.contains_coords((i.try_into().unwrap(), j.try_into().unwrap()))
+        }
+
         pub fn get(&self, coords: (usize, usize)) -> Result<T, ()> {
             let (i, j) = coords;
             if self.contains_coords(coords) {
@@ -38,8 +43,16 @@ pub mod coord_grid {
             }
         }
 
-        pub fn iter(&self) -> impl Iterator<Item=&[T; GRID_WIDTH]> {
+        pub fn iter_rows(&self) -> impl Iterator<Item=&[T; GRID_WIDTH]> {
             self._grid.iter()
+        }
+
+        pub fn iter(&self) -> impl Iterator<Item=&T> {
+            self._grid.iter().flat_map(|row| row.iter())
+        }
+
+        pub fn iter_coords(&self) -> impl Iterator<Item=(usize, usize)> {
+            (0..GRID_HEIGHT).flat_map(|i| (0..GRID_WIDTH).map(move |j| (i.clone(), j)))
         }
         
         pub fn move_coords(&self, coords: (usize, usize), direction: Direction) -> Result<(usize, usize), ()> {
@@ -55,6 +68,20 @@ pub mod coord_grid {
             }
         }
 
+        pub fn force_move_coords(&self, coords: (usize, usize), direction: Direction) -> (isize, isize) {
+            let coords: (isize, isize) = (coords.0.try_into().unwrap(), coords.1.try_into().unwrap());
+            match direction {
+                Direction::North => (coords.0 - 1, coords.1),
+                Direction::East => (coords.0, coords.1 + 1),
+                Direction::South => (coords.0 + 1, coords.1),
+                Direction::West => (coords.0, coords.1 - 1),
+                Direction::Northeast => (coords.0 - 1, coords.1 + 1),
+                Direction::Southeast => (coords.0 + 1, coords.1 + 1),
+                Direction::Southwest => (coords.0 + 1, coords.1 - 1),
+                Direction::Northwest => (coords.0 - 1, coords.1 - 1),
+            }
+        }
+
         pub fn position(&self, needle: T) -> Option<(usize, usize)> {
             for i in 0..GRID_HEIGHT {
                 for j in 0..GRID_WIDTH {
@@ -64,6 +91,14 @@ pub mod coord_grid {
                 }
             }
             None
+        }
+
+        pub fn raw(&self) -> &[[T; GRID_WIDTH]; GRID_HEIGHT] {
+            &self._grid
+        }
+
+        pub fn raw_mut(&mut self) -> &mut [[T; GRID_WIDTH]; GRID_HEIGHT] {
+            &mut self._grid
         }
     }
 
@@ -123,6 +158,10 @@ pub mod coord_grid {
                 Self::West => Self::South,
                 Self::Northwest => Self::Southwest,
             }
+        }
+        
+        pub fn main_directions() -> [Self; 4] {
+            [Self::North, Self::East, Self::South, Self::West]
         }
     }
 }
