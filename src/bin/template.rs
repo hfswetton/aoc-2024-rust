@@ -1,11 +1,11 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader, Lines};
 
-const OUTPUT_MESSAGE: &str = "Total distance";
+const OUTPUT_MESSAGE: &str = "Total";
 const INPUT_FILE: &str = "input/day_XX.txt";
 
-fn calculate_result<T>(lines: Lines<BufReader<File>>) -> Result<T, ()> {
-    Ok(())
+fn calculate_result(lines: Lines<BufReader<File>>) -> Result<usize, ()> {
+    Ok(0)
 }
 
 fn main() {
