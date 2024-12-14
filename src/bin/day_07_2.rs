@@ -56,10 +56,9 @@ fn calculate(numbers: &Vec<u64>, operators: &Vec<Operator>) -> Result<u64, Strin
             Operator::Add => { total += numbers[i + 1] },
             Operator::Multiply => { total *= numbers[i + 1] },
             Operator::Concatenate => {
-                let mut total_str = total.to_string();
-                let num_str = numbers[i + 1].to_string();
-                total_str.push_str(&num_str);
-                total = str::parse(&total_str).unwrap()
+                let e = numbers[i + 1].checked_ilog10().unwrap_or(0);
+                total *= 10u64.pow(e + 1);
+                total += numbers[i + 1];
             }
         }
     }
