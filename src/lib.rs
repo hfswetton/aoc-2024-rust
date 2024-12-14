@@ -14,6 +14,14 @@ pub mod coord_grid {
             Self { _grid: [[T::default(); GRID_WIDTH]; GRID_HEIGHT] }
         }
 
+        pub fn set_all(&mut self, v: T) {
+            for i in 0..GRID_HEIGHT {
+                for j in 0..GRID_WIDTH {
+                    self._grid[i][j] = v;
+                }
+            }
+        }
+
         fn contains_coords(&self, coords: (usize, usize)) -> bool {
             let (i, j) = coords;
             i < GRID_HEIGHT && j < GRID_WIDTH
