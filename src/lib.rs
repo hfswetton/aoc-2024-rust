@@ -142,6 +142,19 @@ pub mod coord_grid {
     }
     
     impl Direction {
+        pub fn turn_45_anticlockwise(&self) -> Self {
+            match self {
+                Self::North => Self::Northwest,
+                Self::Northeast => Self::North,
+                Self::East => Self::Northeast,
+                Self::Southeast => Self::East,
+                Self::South => Self::Southeast,
+                Self::Southwest => Self::South,
+                Self::West => Self::Southwest,
+                Self::Northwest => Self::West,
+            }
+        }
+
         pub fn turn_90_clockwise(&self) -> Self {
             match self {
                 Self::North => Self::East,
@@ -170,6 +183,17 @@ pub mod coord_grid {
         
         pub fn main_directions() -> [Self; 4] {
             [Self::North, Self::East, Self::South, Self::West]
+        }
+
+        pub fn turn_anticlockwise(&self, degrees: usize) -> Result<Self, &str> {
+            if degrees % 45 != 0 {
+                Err("invalid turn angle - must be multiple of 45")
+            } else {
+                let num_45deg_turns = degrees / 45;
+                let mut new_dir = self.clone();
+                for _ in 0..num_45deg_turns { new_dir = new_dir.turn_45_anticlockwise(); }
+                Ok(new_dir)
+            }
         }
     }
 }
