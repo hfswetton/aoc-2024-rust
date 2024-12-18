@@ -22,7 +22,7 @@ pub mod coord_grid {
             }
         }
 
-        fn contains_coords(&self, coords: (usize, usize)) -> bool {
+        pub fn contains_coords(&self, coords: (usize, usize)) -> bool {
             let (i, j) = coords;
             i < GRID_HEIGHT && j < GRID_WIDTH
         }
